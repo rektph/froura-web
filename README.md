@@ -1,2 +1,1 @@
-echo "# froura-web" 
-"# froura-web" 
+# froura-web
