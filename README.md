@@ -32,4 +32,4 @@ npm install
 php artisan key:generate
 ```
 
-## Then go to [froura-web.test](http://froura-web.test)
+## Then go to [froura.test](http://froura.test)
