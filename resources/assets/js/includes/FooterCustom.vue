@@ -27,7 +27,7 @@
         white--text
         xs12
       >
-        &copy;2018 — <strong>POS</strong>
+        &copy;2018 — <strong>FROURA</strong>
       </v-flex>
     </v-layout>
   </v-footer>

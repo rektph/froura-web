@@ -8,7 +8,7 @@
                     <v-flex class="px-4 pb-4 pt2">    
                         <v-card-title primary-title>
                         <div class="full-width">
-                            <h3 class="headline mb-0">Register to <strong>LaraVuePractice</strong></h3>
+                            <h3 class="headline mb-0">Register to <strong>FROURA</strong></h3>
                             <v-divider></v-divider>
                             <v-form ref="regform">
                                 <v-layout row class="pt-2">
