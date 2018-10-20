@@ -3,12 +3,8 @@
 export const state = { 
     loading: false,
     snackbar: false,
-<<<<<<< HEAD
-    baseUrl: 'http://laravueprac.test/'
-=======
     baseUrl: 'http://froura.test/'
     //baseUrl: process.env.NODE_ENV === 'production' ? 'http://froura.test/' : 'http://froura.x10host.com/'
->>>>>>> Saved some changes
 }
 
 // getters
