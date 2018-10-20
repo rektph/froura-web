@@ -2,8 +2,8 @@
 // initial state
 export const state = { 
     loading: false,
-    baseUrl: 'http://froura.test/'
-    //baseUrl: process.env.NODE_ENV === 'production' ? 'http://froura.test/' : 'http://froura.x10host.com/'
+    snackbar: false,
+    baseUrl: 'http://laravueprac.test/'
 }
 
 // getters
