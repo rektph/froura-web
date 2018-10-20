@@ -25,10 +25,10 @@ export const actions = {
 export const mutations = {
     showSnack(state, payload) {
         state.show = true
-        setTimeout(() => { state.show = false }, 3000)
         state.text = payload.text
         state.icon = payload.icon
         state.color = payload.color
+        setTimeout(() => { state.show = false }, 3000)
     },
     hideSnack(state) {
         state.show = false

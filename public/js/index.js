@@ -23693,9 +23693,14 @@ __webpack_require__(17);
 
 
 
-var baseUrl = 'http://pos.test';
-
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_3_vuetify___default.a);
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_3_vuetify___default.a, {
+  theme: {
+    primary: '#F9A825',
+    secondary: '#FFB300',
+    accent: '#8c9eff',
+    error: '#b71c1c'
+  }
+});
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.config.productionTip = false;
 
@@ -75939,8 +75944,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 // initial state
 var state = {
     loading: false,
-    snackbar: false,
-    baseUrl: 'http://laravueprac.test/'
+    baseUrl: 'http://froura.test/'
+    //baseUrl: process.env.NODE_ENV === 'production' ? 'http://froura.test/' : 'http://froura.x10host.com/'
+
 
     // getters
 };var getters = {
@@ -76055,12 +76061,12 @@ var state = {
 };var mutations = {
     showSnack: function showSnack(state, payload) {
         state.show = true;
-        setTimeout(function () {
-            state.show = false;
-        }, 3000);
         state.text = payload.text;
         state.icon = payload.icon;
         state.color = payload.color;
+        setTimeout(function () {
+            state.show = false;
+        }, 3000);
     },
     hideSnack: function hideSnack(state) {
         state.show = false;

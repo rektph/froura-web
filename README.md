@@ -14,7 +14,7 @@ composer install
 npm install
 ```
 
-## Copy this to c:/xampp/conf/extras/httpd-vhost.conf
+## Copy this to C:\xampp\apache\conf\extra\httpd-vhosts.conf
 ```
 <VirtualHost **:80>
     DocumentRoot "C:/xampp/htdocs/froura-web/public"
@@ -22,7 +22,7 @@ npm install
 </VirtualHost>
 ```
 
-## Copy this to c:/Windows/System32/drivers/etc/hosts
+## Copy this to C:\Windows\System32\drivers\etc\hosts
 ```
 127.0.0.1 froura.test
 ```
