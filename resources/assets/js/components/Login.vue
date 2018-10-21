@@ -18,6 +18,13 @@
                                     :error-messages="contactError"
                                     label="Contact Number"
                                     required />
+                                
+                                <vue-recaptcha
+                                    @verify="onVerify()"
+                                    @expired="onExpired()"
+                                    :sitekey="sitekey">
+                                    
+                                </vue-recaptcha>
                             </v-form>
                         </div>
                         </v-card-title>
@@ -44,29 +51,34 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import VueRecaptcha from "vue-recaptcha";
 export default {
     name: 'Login',
+    components: {
+        VueRecaptcha
+    },
     data: () => ({
         loading: false,
         valid: false,
         contact: '',
-        contactError: []
+        contactError: [],
+        sitekey: '6Lf3EXYUAAAAAHZxvJ5tU-wYMGSHKxJQRpwr-Atg'
     }),
     methods: {
         loginContact() {
             this.loading = true
             this.contactError = []
+        },
+        onSubmit() {
             
+        },
+        onVerify(res) {
+            this.loading = false
+            console.log(res)
+        },
+        onExpired() {
+            console.log("Expired")
         }
-    },
-    mounted() {
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
-            'size': 'invisible',
-            'callback': function(response) {
-                // reCAPTCHA solved, allow signInWithPhoneNumber.
-                onSignInSubmit();
-            }
-        })
     },
     computed: mapGetters({
         baseUrl: 'extras/baseUrl'

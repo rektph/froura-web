@@ -11,6 +11,7 @@ const config = {
     messagingSenderId: "63193249338"
 }
 firebase.initializeApp(config)
+firebase.auth().useDeviceLanguage()
 
 // firebase utils
 const db = firebase.firestore()
