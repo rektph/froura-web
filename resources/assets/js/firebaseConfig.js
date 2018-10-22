@@ -1,9 +1,10 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 import 'firebase/firestore'
+require('firebase/auth')
 
 // firebase init goes here
 const config = {
-    apiKey: "AIzaSyBtrUI6i2kH9s_I_drYyE-YNqqFSEEqzi0",
+    apiKey: "AIzaSyB_TZEGCles2-HHLeHPapw7qq5Tyt8z7e0",
     authDomain: "frourav2-21856.firebaseapp.com",
     databaseURL: "https://frourav2-21856.firebaseio.com",
     projectId: "frourav2-21856",
@@ -11,7 +12,7 @@ const config = {
     messagingSenderId: "929594596126"
 }
 firebase.initializeApp(config)
-firebase.auth().useDeviceLanguage()
+// firebase.auth().useDeviceLanguage()
 
 // firebase utils
 const db = firebase.firestore()

@@ -23,6 +23,7 @@
                                     ref="invisibleRecaptcha"
                                     @verify="onVerify"
                                     size="invisible"
+                                    badge="bottomright"
                                     :sitekey="sitekey"/>
                             </v-form>
                         </div>
@@ -45,16 +46,19 @@
             </v-flex>
             <v-flex xs4></v-flex>
         </v-layout>
+        <dialog-verification-code></dialog-verification-code>
     </v-container>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 import VueRecaptcha from "vue-recaptcha";
+import DialogVerificationCode from "../includes/dialog/DialogVerificationCode";
 export default {
     name: 'Login',
     components: {
-        VueRecaptcha
+        VueRecaptcha,
+        DialogVerificationCode
     },
     data: () => ({
         loading: false,
@@ -64,8 +68,8 @@ export default {
             v => !!v || 'Contact Number is required',
             v => /^(09|\+639)\d{9}$/.test(v) || 'Contact Number must be valid'
         ],
-        recatpchaVerified: false,
-        sitekey: '6Ld3KXYUAAAAAJV5-8Vpx-9WE6YyhHw0LOw1pgEO'
+        sitekey: '6Ld3KXYUAAAAAJV5-8Vpx-9WE6YyhHw0LOw1pgEO',
+        recaptcha: []
     }),
     methods: {
         loginContact() {
@@ -74,16 +78,36 @@ export default {
                 this.loading = false
                 return
             }
-            this.$refs.invisibleRecaptcha.execute()
+            this.recaptcha = this.$refs.invisibleRecaptcha.execute()
+            console.log(recaptcha)
         },
         onVerify(res) {
             this.loading = false
+            console.log('ey: '+res)
             
+            // this.$auth.signInWithPhoneNumber(this.contact, true)
+            //     .then((res) => {
+            //         console.log(res)
+            //     }).catch((e) => {
+
+            //     })
+        },
+        loginFacebook() {
+            // this.$db.collection("users").doc("iExNaP84p5EhvJ78kHx7").get()
+            // .then((doc)=>{
+            //     if(doc.exists) {
+            //         console.log(doc.data())
+            //     } else {
+            //         console.log("nope")
+            //     }
+            // }).catch((err) => {
+            //     console.log(err)
+            // })
         }
     },
     computed: mapGetters({
         baseUrl: 'extras/baseUrl'
-    }),
+    })
 }
 </script>
 
