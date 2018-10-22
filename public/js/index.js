@@ -23742,7 +23742,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var util = __webpack_require__(88);
+var util = __webpack_require__(89);
 
 /**
  * Copyright 2017 Google Inc.
@@ -24348,7 +24348,7 @@ function __importDefault(mod) {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(19);
-module.exports = __webpack_require__(93);
+module.exports = __webpack_require__(94);
 
 
 /***/ }),
@@ -24362,12 +24362,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__App__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__App___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__App__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__router__ = __webpack_require__(63);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuetify__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuetify__ = __webpack_require__(79);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_vuetify__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__store__ = __webpack_require__(79);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_firebase_app__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__store__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_firebase_app__ = __webpack_require__(86);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_firebase_app___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_firebase_app__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_firebase_firestore__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_firebase_firestore__ = __webpack_require__(90);
 __webpack_require__(20);
 
 
@@ -50043,7 +50043,7 @@ if (false) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Home___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_Home__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Login__ = __webpack_require__(68);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Login___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Login__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Register__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Register__ = __webpack_require__(74);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Register___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_Register__);
 
 
@@ -52913,7 +52913,7 @@ var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(71)
 /* template */
-var __vue_template__ = __webpack_require__(72)
+var __vue_template__ = __webpack_require__(73)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -52998,7 +52998,7 @@ exports.push([module.i, "\n.full-width[data-v-3e2ac97c] {\r\n    width: 100%;\n}
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_recaptcha__ = __webpack_require__(97);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_recaptcha__ = __webpack_require__(72);
 //
 //
 //
@@ -53088,6 +53088,174 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 /* 72 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var defer = function defer() {
+  var state = false; // Resolved or not
+  var callbacks = [];
+  var resolve = function resolve(val) {
+    if (state) {
+      return;
+    }
+
+    state = true;
+    for (var i = 0, len = callbacks.length; i < len; i++) {
+      callbacks[i](val);
+    }
+  };
+
+  var then = function then(cb) {
+    if (!state) {
+      callbacks.push(cb);
+      return;
+    }
+    cb();
+  };
+
+  var deferred = {
+    resolved: function resolved() {
+      return state;
+    },
+
+    resolve: resolve,
+    promise: {
+      then: then
+    }
+  };
+  return deferred;
+};
+
+function createRecaptcha() {
+  var deferred = defer();
+
+  return {
+    notify: function notify() {
+      deferred.resolve();
+    },
+    wait: function wait() {
+      return deferred.promise;
+    },
+    render: function render(ele, options, cb) {
+      this.wait().then(function () {
+        cb(window.grecaptcha.render(ele, options));
+      });
+    },
+    reset: function reset(widgetId) {
+      if (typeof widgetId === 'undefined') {
+        return;
+      }
+
+      this.assertLoaded();
+      this.wait().then(function () {
+        return window.grecaptcha.reset(widgetId);
+      });
+    },
+    execute: function execute(widgetId) {
+      if (typeof widgetId === 'undefined') {
+        return;
+      }
+
+      this.assertLoaded();
+      this.wait().then(function () {
+        return window.grecaptcha.execute(widgetId);
+      });
+    },
+    checkRecaptchaLoad: function checkRecaptchaLoad() {
+      if (window.hasOwnProperty('grecaptcha') && window.grecaptcha.hasOwnProperty('render')) {
+        this.notify();
+      }
+    },
+    assertLoaded: function assertLoaded() {
+      if (!deferred.resolved()) {
+        throw new Error('ReCAPTCHA has not been loaded');
+      }
+    }
+  };
+}
+
+var recaptcha = createRecaptcha();
+
+if (typeof window !== 'undefined') {
+  window.vueRecaptchaApiLoaded = recaptcha.notify;
+}
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+var VueRecaptcha = {
+  name: 'VueRecaptcha',
+  props: {
+    sitekey: {
+      type: String,
+      required: true
+    },
+    theme: {
+      type: String
+    },
+    badge: {
+      type: String
+    },
+    type: {
+      type: String
+    },
+    size: {
+      type: String
+    },
+    tabindex: {
+      type: String
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    recaptcha.checkRecaptchaLoad();
+    var opts = _extends({}, this.$props, {
+      callback: this.emitVerify,
+      'expired-callback': this.emitExpired
+    });
+    var container = this.$slots.default ? this.$el.children[0] : this.$el;
+    recaptcha.render(container, opts, function (id) {
+      _this.$widgetId = id;
+      _this.$emit('render', id);
+    });
+  },
+
+  methods: {
+    reset: function reset() {
+      recaptcha.reset(this.$widgetId);
+    },
+    execute: function execute() {
+      recaptcha.execute(this.$widgetId);
+    },
+    emitVerify: function emitVerify(response) {
+      this.$emit('verify', response);
+    },
+    emitExpired: function emitExpired() {
+      this.$emit('expired');
+    }
+  },
+  render: function render(h) {
+    return h('div', {}, this.$slots.default);
+  }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (VueRecaptcha);
+
+
+/***/ }),
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -53305,19 +53473,19 @@ if (false) {
 }
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(74)
+  __webpack_require__(75)
 }
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(76)
+var __vue_script__ = __webpack_require__(77)
 /* template */
-var __vue_template__ = __webpack_require__(77)
+var __vue_template__ = __webpack_require__(78)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -53356,13 +53524,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(75);
+var content = __webpack_require__(76);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -53382,7 +53550,7 @@ if(false) {
 }
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(6)(false);
@@ -53396,7 +53564,7 @@ exports.push([module.i, "\n.full-width[data-v-f88ac34c] {\r\n    width: 100%;\n}
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53553,7 +53721,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -53783,7 +53951,7 @@ if (false) {
 }
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -76538,7 +76706,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_vue__;
 //# sourceMappingURL=vuetify.js.map
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -76557,7 +76725,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
 
 // Load store modules dynamically.
-var requireContext = __webpack_require__(80);
+var requireContext = __webpack_require__(81);
 
 var modules = requireContext.keys().map(function (file) {
   return [file.replace(/(^.\/)|(\.js$)/g, ''), requireContext(file)];
@@ -76578,14 +76746,14 @@ var modules = requireContext.keys().map(function (file) {
 }));
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./auth.js": 81,
-	"./extras.js": 82,
-	"./navigation.js": 83,
-	"./snackbar.js": 84
+	"./auth.js": 82,
+	"./extras.js": 83,
+	"./navigation.js": 84,
+	"./snackbar.js": 85
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -76601,10 +76769,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 80;
+webpackContext.id = 81;
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -76631,7 +76799,7 @@ var state = {
 var mutations = {};
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -76676,7 +76844,7 @@ var state = {
 };
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -76715,7 +76883,7 @@ var state = {
 };
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -76775,7 +76943,7 @@ var state = {
 };
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76783,7 +76951,7 @@ var state = {
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-__webpack_require__(86);
+__webpack_require__(87);
 var firebase = _interopDefault(__webpack_require__(16));
 
 /**
@@ -76806,12 +76974,12 @@ module.exports = firebase;
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(setImmediate, global) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_whatwg_fetch__ = __webpack_require__(87);
+/* WEBPACK VAR INJECTION */(function(setImmediate, global) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_whatwg_fetch__ = __webpack_require__(88);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_whatwg_fetch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_whatwg_fetch__);
 
 
@@ -78346,7 +78514,7 @@ var iterator = _wksExt.f('iterator');
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(15).setImmediate, __webpack_require__(3)))
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports) {
 
 (function(self) {
@@ -78818,7 +78986,7 @@ var iterator = _wksExt.f('iterator');
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80601,11 +80769,11 @@ exports.stringToByteArray = stringToByteArray$1;
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__firebase_firestore__ = __webpack_require__(90);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__firebase_firestore__ = __webpack_require__(91);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__firebase_firestore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__firebase_firestore__);
 
 
@@ -80627,7 +80795,7 @@ exports.stringToByteArray = stringToByteArray$1;
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80638,9 +80806,9 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var firebase = _interopDefault(__webpack_require__(16));
-var logger = __webpack_require__(91);
+var logger = __webpack_require__(92);
 var tslib_1 = __webpack_require__(17);
-var webchannelWrapper = __webpack_require__(92);
+var webchannelWrapper = __webpack_require__(93);
 
 /**
  * Copyright 2017 Google Inc.
@@ -101547,7 +101715,7 @@ exports.registerFirestore = registerFirestore;
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -101751,7 +101919,7 @@ function setLogLevel(level) {
 
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -101893,181 +102061,10 @@ var src_5 = src.XhrIoPool;
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 94 */,
-/* 95 */,
-/* 96 */,
-/* 97 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var defer = function defer() {
-  var state = false; // Resolved or not
-  var callbacks = [];
-  var resolve = function resolve(val) {
-    if (state) {
-      return;
-    }
-
-    state = true;
-    for (var i = 0, len = callbacks.length; i < len; i++) {
-      callbacks[i](val);
-    }
-  };
-
-  var then = function then(cb) {
-    if (!state) {
-      callbacks.push(cb);
-      return;
-    }
-    cb();
-  };
-
-  var deferred = {
-    resolved: function resolved() {
-      return state;
-    },
-
-    resolve: resolve,
-    promise: {
-      then: then
-    }
-  };
-  return deferred;
-};
-
-function createRecaptcha() {
-  var deferred = defer();
-
-  return {
-    notify: function notify() {
-      deferred.resolve();
-    },
-    wait: function wait() {
-      return deferred.promise;
-    },
-    render: function render(ele, options, cb) {
-      this.wait().then(function () {
-        cb(window.grecaptcha.render(ele, options));
-      });
-    },
-    reset: function reset(widgetId) {
-      if (typeof widgetId === 'undefined') {
-        return;
-      }
-
-      this.assertLoaded();
-      this.wait().then(function () {
-        return window.grecaptcha.reset(widgetId);
-      });
-    },
-    execute: function execute(widgetId) {
-      if (typeof widgetId === 'undefined') {
-        return;
-      }
-
-      this.assertLoaded();
-      this.wait().then(function () {
-        return window.grecaptcha.execute(widgetId);
-      });
-    },
-    checkRecaptchaLoad: function checkRecaptchaLoad() {
-      if (window.hasOwnProperty('grecaptcha') && window.grecaptcha.hasOwnProperty('render')) {
-        this.notify();
-      }
-    },
-    assertLoaded: function assertLoaded() {
-      if (!deferred.resolved()) {
-        throw new Error('ReCAPTCHA has not been loaded');
-      }
-    }
-  };
-}
-
-var recaptcha = createRecaptcha();
-
-if (typeof window !== 'undefined') {
-  window.vueRecaptchaApiLoaded = recaptcha.notify;
-}
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
-
-var VueRecaptcha = {
-  name: 'VueRecaptcha',
-  props: {
-    sitekey: {
-      type: String,
-      required: true
-    },
-    theme: {
-      type: String
-    },
-    badge: {
-      type: String
-    },
-    type: {
-      type: String
-    },
-    size: {
-      type: String
-    },
-    tabindex: {
-      type: String
-    }
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    recaptcha.checkRecaptchaLoad();
-    var opts = _extends({}, this.$props, {
-      callback: this.emitVerify,
-      'expired-callback': this.emitExpired
-    });
-    var container = this.$slots.default ? this.$el.children[0] : this.$el;
-    recaptcha.render(container, opts, function (id) {
-      _this.$widgetId = id;
-      _this.$emit('render', id);
-    });
-  },
-
-  methods: {
-    reset: function reset() {
-      recaptcha.reset(this.$widgetId);
-    },
-    execute: function execute() {
-      recaptcha.execute(this.$widgetId);
-    },
-    emitVerify: function emitVerify(response) {
-      this.$emit('verify', response);
-    },
-    emitExpired: function emitExpired() {
-      this.$emit('expired');
-    }
-  },
-  render: function render(h) {
-    return h('div', {}, this.$slots.default);
-  }
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (VueRecaptcha);
-
 
 /***/ })
 /******/ ]);
