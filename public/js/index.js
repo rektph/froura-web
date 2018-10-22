@@ -53049,7 +53049,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 
@@ -53063,22 +53062,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             loading: false,
             valid: false,
             contact: '',
-            contactError: [],
-            sitekey: '6Lf3EXYUAAAAAHZxvJ5tU-wYMGSHKxJQRpwr-Atg'
+            contactError: [function (v) {
+                return !!v || 'Contact Number is required';
+            }, function (v) {
+                return (/^(09|\+639)\d{9}$/.test(v) || 'Contact Number must be valid'
+                );
+            }],
+            recatpchaVerified: false,
+            sitekey: '6Ld3KXYUAAAAAJV5-8Vpx-9WE6YyhHw0LOw1pgEO'
         };
     },
     methods: {
         loginContact: function loginContact() {
             this.loading = true;
-            this.contactError = [];
+            if (!this.$refs.contact.validate()) {
+                this.loading = false;
+                return;
+            }
+            this.$refs.invisibleRecaptcha.execute();
         },
-        onSubmit: function onSubmit() {},
         onVerify: function onVerify(res) {
             this.loading = false;
-            console.log(res);
-        },
-        onExpired: function onExpired() {
-            console.log("Expired");
         }
     },
     computed: Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
@@ -53309,6 +53313,8 @@ var render = function() {
                               _c(
                                 "v-form",
                                 {
+                                  ref: "contact",
+                                  attrs: { "lazy-validation": "" },
                                   model: {
                                     value: _vm.valid,
                                     callback: function($$v) {
@@ -53319,10 +53325,10 @@ var render = function() {
                                 },
                                 [
                                   _c("v-text-field", {
-                                    staticClass: "pt-4",
+                                    staticClass: "pt-4 pb-2",
                                     attrs: {
                                       disabled: _vm.loading,
-                                      "error-messages": _vm.contactError,
+                                      rules: _vm.contactError,
                                       label: "Contact Number",
                                       required: ""
                                     },
@@ -53336,15 +53342,12 @@ var render = function() {
                                   }),
                                   _vm._v(" "),
                                   _c("vue-recaptcha", {
-                                    attrs: { sitekey: _vm.sitekey },
-                                    on: {
-                                      verify: function($event) {
-                                        _vm.onVerify()
-                                      },
-                                      expired: function($event) {
-                                        _vm.onExpired()
-                                      }
-                                    }
+                                    ref: "invisibleRecaptcha",
+                                    attrs: {
+                                      size: "invisible",
+                                      sitekey: _vm.sitekey
+                                    },
+                                    on: { verify: _vm.onVerify }
                                   })
                                 ],
                                 1
@@ -53375,7 +53378,8 @@ var render = function() {
                                       attrs: {
                                         color: "primary",
                                         tabindex: "1",
-                                        loading: _vm.loading
+                                        loading: _vm.loading,
+                                        disabled: !_vm.valid
                                       },
                                       on: {
                                         click: function($event) {

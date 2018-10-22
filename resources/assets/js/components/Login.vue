@@ -10,28 +10,27 @@
                         <div class="full-width">
                             <h3 class="headline mb-0">Login to <strong>FROURA</strong></h3>
                             <v-divider></v-divider>
-                            <v-form v-model="valid">
+                            <v-form v-model="valid" ref="contact" lazy-validation>
                                 <v-text-field
-                                    class="pt-4"
+                                    class="pt-4 pb-2"
                                     v-model="contact"
                                     :disabled="loading"
-                                    :error-messages="contactError"
+                                    :rules="contactError"
                                     label="Contact Number"
                                     required />
                                 
                                 <vue-recaptcha
-                                    @verify="onVerify()"
-                                    @expired="onExpired()"
-                                    :sitekey="sitekey">
-                                    
-                                </vue-recaptcha>
+                                    ref="invisibleRecaptcha"
+                                    @verify="onVerify"
+                                    size="invisible"
+                                    :sitekey="sitekey"/>
                             </v-form>
                         </div>
                         </v-card-title>
                         <v-card-actions>
                             <v-layout row wrap align-center>
                                 <v-flex xs12>
-                                    <v-btn color="primary" class="full-width" tabindex="1" :loading="loading" @click="loginContact()">Login with Contact Number</v-btn>
+                                    <v-btn color="primary" class="full-width" tabindex="1" :loading="loading" :disabled="!valid" @click="loginContact()">Login with Contact Number</v-btn>
                                 </v-flex>
                                 <v-flex xs12>
                                     <v-btn color="primary" class="full-width" tabindex="1" :loading="loading" @click="loginFacebook()">Login with Facebook</v-btn>
@@ -61,23 +60,25 @@ export default {
         loading: false,
         valid: false,
         contact: '',
-        contactError: [],
-        sitekey: '6Lf3EXYUAAAAAHZxvJ5tU-wYMGSHKxJQRpwr-Atg'
+        contactError: [
+            v => !!v || 'Contact Number is required',
+            v => /^(09|\+639)\d{9}$/.test(v) || 'Contact Number must be valid'
+        ],
+        recatpchaVerified: false,
+        sitekey: '6Ld3KXYUAAAAAJV5-8Vpx-9WE6YyhHw0LOw1pgEO'
     }),
     methods: {
         loginContact() {
             this.loading = true
-            this.contactError = []
-        },
-        onSubmit() {
-            
+            if(!this.$refs.contact.validate()) {
+                this.loading = false
+                return
+            }
+            this.$refs.invisibleRecaptcha.execute()
         },
         onVerify(res) {
             this.loading = false
-            console.log(res)
-        },
-        onExpired() {
-            console.log("Expired")
+            
         }
     },
     computed: mapGetters({
