@@ -24382,6 +24382,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_3_vuet
     error: '#b71c1c'
   }
 });
+
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.config.productionTip = false;
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.prototype.$db = fb.db;
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.prototype.$auth = fb.auth;
@@ -53027,12 +53028,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 
 
@@ -53055,7 +53050,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 );
             }],
             sitekey: '6Ld3KXYUAAAAAJV5-8Vpx-9WE6YyhHw0LOw1pgEO',
-            recaptcha: []
+            recaptchaVerifier: []
         };
     },
     methods: {
@@ -53065,24 +53060,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.loading = false;
                 return;
             }
-            this.recaptcha = this.$refs.invisibleRecaptcha.execute();
-            console.log(recaptcha);
         },
         onVerify: function onVerify(res) {
             this.loading = false;
-            console.log('ey: ' + res);
-            axios.post('https://www.google.com/recaptcha/api/siteverify', {
-                secret: '6Ld3KXYUAAAAAHtA7J4UNDgEcaB_N0G2hd-5I8S4',
-                response: res
-            }).then(function (res) {
-                console.log('recaptcha: ' + res);
-            });
-            // this.$auth.signInWithPhoneNumber(this.contact, true)
-            //     .then((res) => {
-            //         console.log(res)
-            //     }).catch((e) => {
 
-            //     })
+            this.$auth.signInWithPhoneNumber(this.contact, this.recaptchaVerifier).then(function (res) {
+                console.log(res);
+            });
         },
         loginFacebook: function loginFacebook() {
             // this.$db.collection("users").doc("iExNaP84p5EhvJ78kHx7").get()
@@ -53097,6 +53081,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             // })
         }
     },
+    mounted: function mounted() {
+        this.recaptchaVerifier = grecaptcha.render('recaptcha', {
+            'sitekey': this.sitekey,
+            'size': 'invisible',
+            'callback': this.onVerify
+        });
+    },
+
     computed: Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
         baseUrl: 'extras/baseUrl'
     })
@@ -53666,15 +53658,7 @@ var render = function() {
                                     }
                                   }),
                                   _vm._v(" "),
-                                  _c("vue-recaptcha", {
-                                    ref: "invisibleRecaptcha",
-                                    attrs: {
-                                      size: "invisible",
-                                      badge: "bottomright",
-                                      sitekey: _vm.sitekey
-                                    },
-                                    on: { verify: _vm.onVerify }
-                                  })
+                                  _c("div", { attrs: { id: "recaptcha" } })
                                 ],
                                 1
                               )

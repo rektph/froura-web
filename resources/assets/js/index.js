@@ -15,10 +15,10 @@ Vue.use(Vuetify, {
     error: '#b71c1c'
   }
 })
+
 Vue.config.productionTip = false
 Vue.prototype.$db = fb.db
 Vue.prototype.$auth = fb.auth
-
 
 new Vue({
   el: '#app',

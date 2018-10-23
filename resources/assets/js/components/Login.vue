@@ -18,13 +18,7 @@
                                     :rules="contactError"
                                     label="Contact Number"
                                     required />
-                                
-                                <vue-recaptcha
-                                    ref="invisibleRecaptcha"
-                                    @verify="onVerify"
-                                    size="invisible"
-                                    badge="bottomright"
-                                    :sitekey="sitekey"/>
+                                <div id="recaptcha"></div>
                             </v-form>
                         </div>
                         </v-card-title>
@@ -69,7 +63,7 @@ export default {
             v => /^(09|\+639)\d{9}$/.test(v) || 'Contact Number must be valid'
         ],
         sitekey: '6Ld3KXYUAAAAAJV5-8Vpx-9WE6YyhHw0LOw1pgEO',
-        recaptcha: []
+        recaptchaVerifier: []
     }),
     methods: {
         loginContact() {
@@ -78,19 +72,14 @@ export default {
                 this.loading = false
                 return
             }
-            this.recaptcha = this.$refs.invisibleRecaptcha.execute()
-            console.log(recaptcha)
         },
         onVerify(res) {
             this.loading = false
-            console.log('ey: '+res)
             
-            // this.$auth.signInWithPhoneNumber(this.contact, true)
-            //     .then((res) => {
-            //         console.log(res)
-            //     }).catch((e) => {
-
-            //     })
+            this.$auth.signInWithPhoneNumber(this.contact, this.recaptchaVerifier)
+                .then((res) => {
+                    console.log(res)
+                })
         },
         loginFacebook() {
             // this.$db.collection("users").doc("iExNaP84p5EhvJ78kHx7").get()
@@ -104,6 +93,13 @@ export default {
             //     console.log(err)
             // })
         }
+    },
+    mounted() {
+        this.recaptchaVerifier = grecaptcha.render('recaptcha', {
+            'sitekey' : this.sitekey,
+            'size' : 'invisible',
+            'callback': onVerify
+        })
     },
     computed: mapGetters({
         baseUrl: 'extras/baseUrl'
