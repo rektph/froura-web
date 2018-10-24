@@ -53050,7 +53050,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 );
             }],
             sitekey: '6Ld3KXYUAAAAAJV5-8Vpx-9WE6YyhHw0LOw1pgEO',
-            recaptchaVerifier: []
+            captchaVerified: false
         };
     },
     methods: {
@@ -53061,13 +53061,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 return;
             }
         },
-        onVerify: function onVerify(res) {
-            this.loading = false;
-
-            this.$auth.signInWithPhoneNumber(this.contact, this.recaptchaVerifier).then(function (res) {
-                console.log(res);
-            });
-        },
+        onVerify: function onVerify() {},
         loginFacebook: function loginFacebook() {
             // this.$db.collection("users").doc("iExNaP84p5EhvJ78kHx7").get()
             // .then((doc)=>{
@@ -53082,15 +53076,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     mounted: function mounted() {
-        this.recaptchaVerifier = grecaptcha.render('recaptcha', {
-            'sitekey': this.sitekey,
-            'size': 'invisible',
-            'callback': this.onVerify
-        });
+        this.$store.commit('recaptcha/setupVerif', { "elem": "recaptcha", "config": {
+                'size': 'normal',
+                'callback': function callback(res) {
+                    var _this = this;
+
+                    return new Promise(function (resolve, object) {
+                        _this.captchaVerified = true;
+                        _this.$auth.signInWithPhoneNumber(_this.contact, _this.appVerif).then(function (res) {
+                            console.log("sent: " + res);
+                        }).catch(function (e) {
+                            console.log("err: " + e);
+                        });
+                    });
+                },
+                'expired-callback': function expiredCallback(res) {
+                    this.captchaVerified = false;
+                }
+            } });
     },
 
     computed: Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
-        baseUrl: 'extras/baseUrl'
+        baseUrl: 'extras/baseUrl',
+        appVerif: 'recaptcha/appVerif'
     })
 });
 
@@ -77070,6 +77078,7 @@ var map = {
 	"./dialog.js": 88,
 	"./extras.js": 89,
 	"./navigation.js": 90,
+	"./recaptcha.js": 107,
 	"./snackbar.js": 91
 };
 function webpackContext(req) {
@@ -102807,6 +102816,51 @@ c){a=new Xl(a);c({INTERNAL:{getUid:r(a.getUid,a),getToken:r(a.bc,a),addAuthToken
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 104 */,
+/* 105 */,
+/* 106 */,
+/* 107 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "state", function() { return state; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getters", function() { return getters; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mutations", function() { return mutations; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_firebase_app__ = __webpack_require__(93);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_firebase_app___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_firebase_app__);
+
+
+// initial state
+var state = {
+    appVerif: '',
+    appWidgetId: ''
+
+    // getters
+};var getters = {
+    appVerif: function appVerif(state) {
+        return state.appVerif;
+    }
+
+    // actions
+};var actions = {
+    setupVerif: function setupVerif(_ref) {
+        var commit = _ref.commit;
+        return commit('setupVerif', payload);
+    }
+
+    // mutations
+};var mutations = {
+    setupVerif: function setupVerif(state, payload) {
+        state.appVerif = new __WEBPACK_IMPORTED_MODULE_0_firebase_app___default.a.auth.RecaptchaVerifier(payload.elem, payload.config);
+        state.appVerif.render().then(function (widgetId) {
+            state.appWidgetId = widgetId;
+        });
+    }
+};
 
 /***/ })
 /******/ ]);

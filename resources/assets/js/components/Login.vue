@@ -63,7 +63,7 @@ export default {
             v => /^(09|\+639)\d{9}$/.test(v) || 'Contact Number must be valid'
         ],
         sitekey: '6Ld3KXYUAAAAAJV5-8Vpx-9WE6YyhHw0LOw1pgEO',
-        recaptchaVerifier: []
+        captchaVerified: false
     }),
     methods: {
         loginContact() {
@@ -73,13 +73,8 @@ export default {
                 return
             }
         },
-        onVerify(res) {
-            this.loading = false
+        onVerify() {
             
-            this.$auth.signInWithPhoneNumber(this.contact, this.recaptchaVerifier)
-                .then((res) => {
-                    console.log(res)
-                })
         },
         loginFacebook() {
             // this.$db.collection("users").doc("iExNaP84p5EhvJ78kHx7").get()
@@ -95,14 +90,27 @@ export default {
         }
     },
     mounted() {
-        this.recaptchaVerifier = grecaptcha.render('recaptcha', {
-            'sitekey' : this.sitekey,
-            'size' : 'invisible',
-            'callback': onVerify
-        })
+        this.$store.commit('recaptcha/setupVerif', {"elem":"recaptcha", "config" : {
+            'size' : 'normal',
+            'callback': function(res) {
+                return new Promise((resolve, object) => {
+                this.captchaVerified = true
+                this.$auth.signInWithPhoneNumber(this.contact, this.appVerif)
+                    .then(function(res) {
+                        console.log("sent: "+res)
+                    }).catch(function(e) {
+                        console.log("err: "+e)
+                    })
+                })
+            },
+            'expired-callback': function(res) {
+                this.captchaVerified = false
+            }
+        }})
     },
     computed: mapGetters({
-        baseUrl: 'extras/baseUrl'
+        baseUrl: 'extras/baseUrl',
+        appVerif: 'recaptcha/appVerif'
     })
 }
 </script>
