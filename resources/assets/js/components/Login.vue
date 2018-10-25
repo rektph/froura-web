@@ -93,18 +93,14 @@ export default {
         this.$store.commit('recaptcha/setupVerif', {"elem":"recaptcha", "config" : {
             'size' : 'normal',
             'callback': function(res) {
-                return new Promise((resolve, object) => {
-                this.captchaVerified = true
-                this.$auth.signInWithPhoneNumber(this.contact, this.appVerif)
-                    .then(function(res) {
-                        console.log("sent: "+res)
-                    }).catch(function(e) {
-                        console.log("err: "+e)
-                    })
-                })
-            },
-            'expired-callback': function(res) {
-                this.captchaVerified = false
+                console.log(res)
+                // this.captchaVerified = true
+                // this.$auth.signInWithPhoneNumber(this.contact, this.appVerif)
+                //     .then(function(res) {
+                //         console.log("sent: "+res)
+                //     }).catch(function(e) {
+                //         console.log("err: "+e)
+                //     })
             }
         }})
     },
