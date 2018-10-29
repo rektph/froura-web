@@ -77875,11 +77875,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 return;
             }
         },
-        onVerify: function onVerify() {
+        verifyRecaptcha: function verifyRecaptcha() {
+            var self = this;
             this.loading = false;
+            self.$store.commit('dialog/showdialog', { "key": "verifCode" });
             this.$auth.signInWithPhoneNumber(this.contact, window.recaptchaVerifier).then(function (confirmationResult) {
-                console.log("sent");
-            }).catch(function (error) {
+                window.confirmationResult = confirmationResult;
+            }).catch(function (e) {
                 console.log(e);
             });
         },
@@ -77895,7 +77897,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             'size': 'invisible',
             'callback': function callback(response) {
                 // reCAPTCHA solved, allow signInWithPhoneNumber.
-                self.onVerify();
+                self.verifyRecaptcha();
             }
         });
 
@@ -77905,7 +77907,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     computed: Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
-        baseUrl: 'extras/baseUrl'
+        baseUrl: 'extras/baseUrl',
+        verifCode: 'dialog/verifCode'
     })
 });
 
@@ -78794,6 +78797,8 @@ exports.push([module.i, "\n.full-width[data-v-1b90f476] {\r\n    width: 100%;\n}
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Login__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Login___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_Login__);
 //
 //
 //
@@ -78829,33 +78834,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: 'DialogVerificationCode',
     data: function data() {
         return {
-            valid: false,
-            contact: '',
-            contactError: []
+            valid: false
         };
     },
     methods: {
         updateDialog: function updateDialog() {
-            this.$store.dispatch('dialog/showdialog');
+            this.$store.dispatch('dialog/showdialog', { "key": "verifCode" });
+        },
+        verify: function verify() {
+            var self = this;
+            console.log(self.code);
+            confirmationResult.confirm(self.code).then(function (res) {
+                console.log(res.user);
+            }).catch(function (e) {
+                console.log(e);
+            });
         }
     },
     computed: Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])({
-        show: 'dialog/show',
-        loading: 'extras/loading'
+        show: 'dialog/showVerifCode',
+        loading: 'extras/loading',
+        code: 'dialog/verifCode',
+        codeError: 'dialog/verifCodeError'
     })
 });
 
@@ -78880,23 +78887,7 @@ var render = function() {
               _c(
                 "v-toolbar",
                 { attrs: { dark: "", card: "", color: "primary" } },
-                [
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: { icon: "", dark: "", disabled: false },
-                      on: {
-                        click: function($event) {
-                          _vm.updateDialog()
-                        }
-                      }
-                    },
-                    [_c("v-icon", [_vm._v("close")])],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c("v-toolbar-title", [_vm._v("Enter Code")])
-                ],
+                [_c("v-toolbar-title", [_vm._v("Enter Code")])],
                 1
               ),
               _vm._v(" "),
@@ -78932,16 +78923,9 @@ var render = function() {
                           staticClass: "pt-1",
                           attrs: {
                             disabled: _vm.loading,
-                            rules: _vm.contactError,
+                            rules: _vm.codeError,
                             label: "Verification Code",
                             required: ""
-                          },
-                          model: {
-                            value: _vm.contact,
-                            callback: function($$v) {
-                              _vm.contact = $$v
-                            },
-                            expression: "contact"
                           }
                         })
                       ],
@@ -78974,11 +78958,11 @@ var render = function() {
                               },
                               on: {
                                 click: function($event) {
-                                  _vm.loginGoogle()
+                                  _vm.verify()
                                 }
                               }
                             },
-                            [_vm._v("Login with Google")]
+                            [_vm._v("Enter Verification Code")]
                           )
                         ],
                         1
@@ -102506,25 +102490,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 // initial state
 var state = {
-    show: false
+    show: {
+        "verifCode": false
+    },
+    verifCode: '',
+    verifCodeError: []
 
     // getters
 };var getters = {
-    show: function show(state) {
-        return state.show;
+    showVerifCode: function showVerifCode(state) {
+        return state.show.verifCode;
+    },
+    verifCode: function verifCode(state) {
+        return state.verifCode;
+    },
+    verifCodeError: function verifCodeError(state) {
+        return state.verifCodeError;
     }
 
     // actions
 };var actions = {
     showdialog: function showdialog(_ref) {
         var commit = _ref.commit;
-        return commit('showdialog');
+        return commit('showdialog', payload);
     }
 
     // mutations
 };var mutations = {
-    showdialog: function showdialog(state) {
-        state.show = !state.show;
+    showdialog: function showdialog(state, payload) {
+        state.show[payload.key] = !state.show[payload.key];
     }
 };
 

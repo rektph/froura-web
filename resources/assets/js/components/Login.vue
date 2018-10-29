@@ -1,4 +1,4 @@
-<template>
+<template ref="loginComponent">
     <v-container grid-list-md>
         <v-layout row wrap>
             <v-flex xs4></v-flex>
@@ -74,12 +74,14 @@ export default {
                 return
             }
         },
-        onVerify() {
+        verifyRecaptcha() {
+            const self = this
             this.loading = false
+            self.$store.commit('dialog/showdialog', {"key":"verifCode"})
             this.$auth.signInWithPhoneNumber(this.contact, window.recaptchaVerifier)
                 .then(function (confirmationResult) {
-                    console.log("sent")
-                }).catch(function (error) {
+                    window.confirmationResult = confirmationResult
+                }).catch(function (e) {
                     console.log(e)
                 });
         },
@@ -90,14 +92,14 @@ export default {
     mounted() {
         const self = this
         if (this.$refs.contact) {
-            this.$refs.contact.focus() 
+            this.$refs.contact.focus()
         }
 
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha', {
             'size': 'invisible',
             'callback': (response) => {
                 // reCAPTCHA solved, allow signInWithPhoneNumber.
-                self.onVerify();
+                self.verifyRecaptcha();
             }
         });
 
@@ -106,7 +108,8 @@ export default {
         });
     },
     computed: mapGetters({
-        baseUrl: 'extras/baseUrl'
+        baseUrl: 'extras/baseUrl',
+        verifCode: 'dialog/verifCode'
     })
 }
 </script>

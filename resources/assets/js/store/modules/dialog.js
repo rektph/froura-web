@@ -1,22 +1,28 @@
 
 // initial state
 export const state = { 
-    show: false
+    show: {
+        "verifCode":false
+    },
+    verifCode: '',
+    verifCodeError: []
 }
 
 // getters
 export const getters = {
-    show: state => state.show
+    showVerifCode: state => state.show.verifCode,
+    verifCode: state => state.verifCode,
+    verifCodeError: state => state.verifCodeError,
 }
 
 // actions
 export const actions = {
-    showdialog: ({commit}) => commit('showdialog')
+    showdialog: ({commit}) => commit('showdialog', payload)
 }
 
 // mutations
 export const mutations = {
-    showdialog (state) {
-        state.show = !state.show
+    showdialog (state, payload) {
+        state.show[payload.key] = !state.show[payload.key]
     }
 }

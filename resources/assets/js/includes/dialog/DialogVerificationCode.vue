@@ -6,13 +6,6 @@
             max-width="400">
             <v-card>
                 <v-toolbar dark card color="primary">
-                    <v-btn
-                        icon
-                        dark
-                        :disabled="false"
-                        @click="updateDialog()">
-                            <v-icon>close</v-icon>
-                    </v-btn>
                     <v-toolbar-title>Enter Code</v-toolbar-title>
                 </v-toolbar>
                 <v-progress-linear :indeterminate="true" height="3" class="ma-0" color="secondary lighten-1" :active="false"></v-progress-linear>
@@ -21,9 +14,8 @@
                         <v-form v-model="valid" lazy-validation>
                             <v-text-field
                                 class="pt-1"
-                                v-model="contact"
                                 :disabled="loading"
-                                :rules="contactError"
+                                :rules="codeError"
                                 label="Verification Code"
                                 required />
                         </v-form>
@@ -32,7 +24,7 @@
                 <v-card-actions>
                     <v-layout row wrap align-center>
                         <v-flex xs12>
-                            <v-btn color="primary" class="full-width" tabindex="1" :loading="loading" @click="loginGoogle()">Login with Google</v-btn>
+                            <v-btn color="primary" class="full-width" tabindex="1" :loading="loading" @click="verify()">Enter Verification Code</v-btn>
                         </v-flex>
                     </v-layout>
                 </v-card-actions>
@@ -43,21 +35,31 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import Login from '../../components/Login';
 export default {
     name: 'DialogVerificationCode',
     data: () =>( {
         valid: false,
-        contact: '',
-        contactError: []
     }),
     methods: {
         updateDialog() {
-            this.$store.dispatch('dialog/showdialog')
+            this.$store.dispatch('dialog/showdialog', {"key":"verifCode"})
+        },
+        verify() {
+            const self = this
+            console.log(self.code)
+            confirmationResult.confirm(self.code).then((res) => {
+                console.log(res.user)
+            }).catch((e) => {
+                console.log(e)
+            })
         }
     },
     computed: mapGetters({
-        show: 'dialog/show',
-        loading: 'extras/loading'
+        show: 'dialog/showVerifCode',
+        loading: 'extras/loading',
+        code: 'dialog/verifCode',
+        codeError: 'dialog/verifCodeError'
     })
 }
 </script>
