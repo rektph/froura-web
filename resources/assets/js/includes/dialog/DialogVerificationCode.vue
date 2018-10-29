@@ -15,6 +15,7 @@
                             <v-text-field
                                 class="pt-1"
                                 :disabled="loading"
+                                v-model="code"
                                 :rules="codeError"
                                 label="Verification Code"
                                 required />
@@ -39,6 +40,8 @@ import Login from '../../components/Login';
 export default {
     name: 'DialogVerificationCode',
     data: () =>( {
+        code: '',
+        codeError: [],
         valid: false,
     }),
     methods: {
@@ -47,19 +50,31 @@ export default {
         },
         verify() {
             const self = this
-            console.log(self.code)
             confirmationResult.confirm(self.code).then((res) => {
-                console.log(res.user)
+                self.$db.get().then((doc) => {
+                    if(doc.exists) {
+                        // redirect
+                    } else {
+                        // close dialog verifcode but save userid
+                        // open dialog registration
+                        self.$store.commit('auth/setUser', {utype:res.user.uid, utype:"1"})
+                        self.$user.doc(res.user.uid).set({
+                            utype:"1"
+                        })
+                    }
+                })
             }).catch((e) => {
                 console.log(e)
             })
+        },
+        key(e) {
+            console.log(e)
         }
     },
     computed: mapGetters({
         show: 'dialog/showVerifCode',
         loading: 'extras/loading',
-        code: 'dialog/verifCode',
-        codeError: 'dialog/verifCodeError'
+        
     })
 }
 </script>

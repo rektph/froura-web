@@ -18,6 +18,7 @@ Vue.use(Vuetify, {
 
 Vue.config.productionTip = false
 Vue.prototype.$db = fb.db
+Vue.prototype.$user = fb.db.collection("users")
 Vue.prototype.$auth = fb.auth
 
 var vm = new Vue({

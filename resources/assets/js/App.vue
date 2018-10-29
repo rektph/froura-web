@@ -29,7 +29,7 @@ export default {
         Snackbar
     },
     computed: mapGetters({
-        user: 'auth/user',
+        user: 'auth/uid',
         loading: 'extras/loading'
     }),
     methods: {

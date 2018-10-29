@@ -1,16 +1,25 @@
 
 // initial state
 export const state = { 
-    user: null
+    uid: null,
+    utype: ''
 }
 
 // getters
 export const getters = {
-    user: state => state.user
+    uid: state => state.uid,
+    utype: state => state.utype
 }
 
 // actions
-export const actions = { }
+export const actions = {
+    setUser: ({commit}) => commit('setUser', payload)
+}
 
 // mutations
-export const mutations = { }
+export const mutations = {
+    setUser(state, payload) {
+        state.uid = payload.uid
+        state.utype = payload.utype
+    }
+}

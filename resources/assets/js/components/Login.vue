@@ -41,6 +41,7 @@
             <v-flex xs4></v-flex>
         </v-layout>
         <dialog-verification-code></dialog-verification-code>
+        <dialog-registration></dialog-registration>
     </v-container>
 </template>
 
@@ -49,11 +50,13 @@ import { mapActions, mapGetters } from "vuex";
 import VueRecaptcha from "vue-recaptcha";
 import firebase from 'firebase/app';
 import DialogVerificationCode from "../includes/dialog/DialogVerificationCode";
+import DialogRegistration from "../includes/dialog/DialogRegistration";
 export default {
     name: 'Login',
     components: {
         VueRecaptcha,
-        DialogVerificationCode
+        DialogVerificationCode,
+        DialogRegistration
     },
     data: () => ({
         loading: false,
@@ -77,10 +80,10 @@ export default {
         verifyRecaptcha() {
             const self = this
             this.loading = false
-            self.$store.commit('dialog/showdialog', {"key":"verifCode"})
             this.$auth.signInWithPhoneNumber(this.contact, window.recaptchaVerifier)
                 .then(function (confirmationResult) {
                     window.confirmationResult = confirmationResult
+                    self.$store.commit('dialog/showdialog', {"key":"verifCode"})
                 }).catch(function (e) {
                     console.log(e)
                 });
