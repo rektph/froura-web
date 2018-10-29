@@ -20,7 +20,7 @@ Vue.config.productionTip = false
 Vue.prototype.$db = fb.db
 Vue.prototype.$auth = fb.auth
 
-new Vue({
+var vm = new Vue({
   el: '#app',
   store,
   router,

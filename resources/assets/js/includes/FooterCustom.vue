@@ -3,6 +3,7 @@
     app
     height="auto"
     color="primary lighten-1"
+    absolute
   >
     <v-layout
       justify-center
