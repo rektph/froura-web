@@ -24489,20 +24489,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.config.productionTip = false;
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.prototype.$db = fb.db;
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.prototype.$user = fb.db.collection("users");
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.prototype.$auth = fb.auth;
-console.log(checkAuth([0, 1], [0, 1, 3, 4, 5]));
-__WEBPACK_IMPORTED_MODULE_2__router__["a" /* default */].beforeEach(function (to, from, next) {
-  if (true) {
-    next();
-  } else {
-    if (store.state.auth.uid != null) {
-      if (store.state.auth.utype == 1) {
-        router.push('/dashboard');
-      }
-    } else {
-      next('login');
-    }
-  }
-});
+
+__WEBPACK_IMPORTED_MODULE_2__router__["a" /* default */].beforeEach(function (to, from, next) {});
 
 new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
   el: '#app',
