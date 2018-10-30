@@ -3,6 +3,7 @@
 export const state = { 
     loading: false,
     snackbar: false,
+    mobile: '+639167983610',
     baseUrl: 'http://froura.test/'
     //baseUrl: process.env.NODE_ENV === 'production' ? 'http://froura.test/' : 'http://froura.x10host.com/'
 }
@@ -11,17 +12,22 @@ export const state = {
 export const getters = {
     loading: state => state.loading,
     snackbar: state => state.snackbar,
-    baseUrl: state => state.baseUrl
+    baseUrl: state => state.baseUrl,
+    mobile: state => state.mobile
 }
 
 // actions
 export const actions = {
-    loadpage: ({commit}) => commit('loadpage')
+    loadpage: ({commit}) => commit('loadpage'),
+    setMobile: ({commit}) => commit('setmobile', payload)
 }
 
 // mutations
 export const mutations = {
-    loadpage (state) {
+    loadpage(state) {
         state.loading = !state.loading
+    },
+    setmobile(state, payload) {
+        state.mobile = payload.mobile
     }
 }

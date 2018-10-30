@@ -73,13 +73,14 @@ export default {
         loginContact() {
             this.loading = true
             if(!this.$refs.login.validate()) {
-                this.loading = false
                 return
             }
+            
         },
         verifyRecaptcha() {
             const self = this
             this.loading = false
+            self.$store.commit('extras/setMobile', {mobile:self.contact})
             this.$auth.signInWithPhoneNumber(this.contact, window.recaptchaVerifier)
                 .then(function (confirmationResult) {
                     window.confirmationResult = confirmationResult
@@ -111,8 +112,7 @@ export default {
         });
     },
     computed: mapGetters({
-        baseUrl: 'extras/baseUrl',
-        verifCode: 'dialog/verifCode'
+        baseUrl: 'extras/baseUrl'
     })
 }
 </script>
