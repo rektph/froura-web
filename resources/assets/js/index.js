@@ -37,7 +37,17 @@ Vue.prototype.$user = fb.db.collection("users")
 Vue.prototype.$auth = fb.auth
 
 router.beforeEach((to, from, next) => {
-  
+  if(checkAuth(to.meta.auth, store.state.auth.access, -1)) {
+    next()
+  } else {
+    if(checkAuth(store.state.auth.access, [-1, 1, 2, 3, 4])) {
+      if(checkAuth(store.state.auth.access, [1])) {
+        next('/dashboard')
+      }
+    } else {
+      next('/')
+    }
+  }
 })
 
 

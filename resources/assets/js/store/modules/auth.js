@@ -2,7 +2,8 @@
 // initial state
 export const state = { 
     uid: null,
-    utype: ''
+    utype: '',
+    access: [1]
 }
 
 // getters

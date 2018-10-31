@@ -24,7 +24,7 @@ export default new Router({
       name: 'Home',
       component: Home,
       meta: {
-        auth: 0
+        auth: [0]
       }
     },
     {
@@ -32,7 +32,7 @@ export default new Router({
       name: 'Login',
       component: Login,
       meta: {
-        auth: 0
+        auth: [0]
       }
     },
     {
@@ -40,7 +40,7 @@ export default new Router({
       name: 'Register',
       component: Register,
       meta: {
-        auth: 0
+        auth: [0]
       }
     },
     {
@@ -48,7 +48,7 @@ export default new Router({
       name: 'Dashboard',
       component: Dashboard,
       meta: {
-        auth: [0, 1]
+        auth: [1]
       }
     }
   ]
