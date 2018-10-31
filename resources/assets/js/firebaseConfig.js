@@ -4,7 +4,7 @@ require('firebase/auth')
 
 // firebase init goes here
 const config = {
-    apiKey: "AIzaSyB_TZEGCles2-HHLeHPapw7qq5Tyt8z7e0",
+    apiKey: "AIzaSyAOM55prrVcbDihJVz8qpapapXYRty3qlQ",
     authDomain: "frourav2-21856.firebaseapp.com",
     databaseURL: "https://frourav2-21856.firebaseio.com",
     projectId: "frourav2-21856",

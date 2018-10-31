@@ -13,4 +13,4 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('/passenger/validate', 'PassengerController@passengerValidate');
+Route::post('/passenger/register', 'PassengerController@passengerRegister');

@@ -21,7 +21,8 @@
             <v-divider></v-divider>
             <v-list-tile
             v-for="item in items"
-            :key="item.title" >
+            :key="item.title"
+            :to="item.to" >
             <v-list-tile-action>
                 <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>

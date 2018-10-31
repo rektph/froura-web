@@ -3,7 +3,7 @@
 export const state = { 
     uid: null,
     utype: '',
-    access: [1]
+    access: [0]
 }
 
 // getters
@@ -14,13 +14,16 @@ export const getters = {
 
 // actions
 export const actions = {
-    setUser: ({commit}) => commit('setUser', payload)
+    setUid: ({commit}) => commit('setUid', payload),
+    setUtype: ({commit}) => commit('setUtype', payload)
 }
 
 // mutations
 export const mutations = {
-    setUser(state, payload) {
+    setUid(state, payload) {
         state.uid = payload.uid
+    },
+    setUtype(state, payload) {
         state.utype = payload.utype
     }
 }

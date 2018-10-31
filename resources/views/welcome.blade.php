@@ -7,7 +7,6 @@
         <link href='https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Material+Icons' rel="stylesheet">
         <link rel="stylesheet" href="{{asset('css/override.css')}}">
         <link rel="icon" href="{{asset('favicon.png')}}">
-        <script src='https://www.google.com/recaptcha/api.js'></script>
         <title>FROURA</title>
     </head>
     <body>

@@ -1,14 +1,18 @@
 <template>
     <v-app>
         <navigation v-if="user"></navigation>
-        <toolbar v-if="user"></toolbar>
+        <transition name="fade" mode="out-in" @beforeLeave="beforeLeave" @enter="enter" @afterEnter="afterEnter">            
+            <toolbar v-if="user"></toolbar>
+        </transition>
         <v-progress-linear :indeterminate="true" class="ma-0" :active="loading"></v-progress-linear>
         <v-content>
             <transition name="fade" mode="out-in" @beforeLeave="beforeLeave" @enter="enter" @afterEnter="afterEnter">
                 <router-view/>
             </transition>
         </v-content>
-        <footer-custom></footer-custom>
+        <transition name="fade" mode="out-in" @beforeLeave="beforeLeave" @enter="enter" @afterEnter="afterEnter">
+            <footer-custom v-if="this.$router.currentRoute.name != 'Login' && !user"></footer-custom>
+        </transition>
         <snackbar/>
     </v-app>
 </template>
@@ -29,7 +33,7 @@ export default {
         Snackbar
     },
     computed: mapGetters({
-        user: 'auth/uid',
+        user: 'auth/utype',
         loading: 'extras/loading'
     }),
     methods: {

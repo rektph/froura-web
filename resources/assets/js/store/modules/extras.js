@@ -19,7 +19,7 @@ export const getters = {
 // actions
 export const actions = {
     loadpage: ({commit}) => commit('loadpage'),
-    setMobile: ({commit}) => commit('setmobile', payload)
+    setMobile: ({commit}) => commit('setMobile', payload)
 }
 
 // mutations
@@ -27,7 +27,7 @@ export const mutations = {
     loadpage(state) {
         state.loading = !state.loading
     },
-    setmobile(state, payload) {
+    setMobile(state, payload) {
         state.mobile = payload.mobile
     }
 }

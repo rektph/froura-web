@@ -4,7 +4,10 @@
             <v-flex xs4></v-flex>
             <v-flex xs4>
                 <v-card>
-                    <!-- <v-progress-linear :indeterminate="true" class="ma-0" :active="loading"></v-progress-linear> -->
+                    <v-progress-linear 
+                        :indeterminate="true"
+                        class="ma-0" 
+                        :active="typeof loading == 'string'" />
                     <v-flex class="px-4 pb-4 pt2">    
                         <v-card-title primary-title class="pb-0 mb-0">
                         <div class="full-width">
@@ -14,7 +17,7 @@
                                 <v-text-field
                                     class="pt-4 pb-2"
                                     v-model="contact"
-                                    :disabled="loading"    
+                                    :disabled="loading == 'contact'"    
                                     :rules="contactError"
                                     ref="contact"
                                     label="Contact Number"
@@ -25,14 +28,34 @@
                         <v-card-actions>
                             <v-layout row wrap align-center>
                                 <v-flex xs12>
-                                    <v-btn color="primary" id="recaptcha" class="full-width" tabindex="1" :loading="loading" :disabled="!valid" @click="loginContact()">Login with Contact Number</v-btn>
-                                </v-flex>
-                                <!-- <v-flex xs12>
-                                    <v-btn color="primary" class="full-width" tabindex="1" :loading="loading" @click="loginFacebook()">Login with Facebook</v-btn>
+                                    <v-btn 
+                                        color="primary" 
+                                        id="recaptcha" 
+                                        class="full-width" 
+                                        :loading="loading === 'contact'" 
+                                        :disabled="!valid" 
+                                        @click="loginContact()" >
+                                        Login with Contact Number
+                                    </v-btn>
                                 </v-flex>
                                 <v-flex xs12>
-                                    <v-btn color="primary" class="full-width" tabindex="1" :loading="loading" @click="loginGoogle()">Login with Google</v-btn>
-                                </v-flex> -->
+                                    <v-btn
+                                        color="primary" 
+                                        class="full-width" 
+                                        :loading="loading === 'facebook'"
+                                        @click="loginFacebook()">
+                                        Login with Facebook
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-btn
+                                        color="primary"
+                                        class="full-width"
+                                        :loading="loading === 'google'"
+                                        @click="loginGoogle()">
+                                        Login with Google
+                                    </v-btn>
+                                </v-flex>
                             </v-layout>
                         </v-card-actions>
                     </v-flex>
@@ -40,8 +63,18 @@
             </v-flex>
             <v-flex xs4></v-flex>
         </v-layout>
-        <dialog-verification-code></dialog-verification-code>
-        <dialog-registration></dialog-registration>
+        <dialog-verification-code />
+        <dialog-registration />
+        <v-btn
+            color="primary"
+            dark
+            fixed
+            top
+            right
+            fab
+            to="/" >
+            <v-icon>home</v-icon>
+        </v-btn>
     </v-container>
 </template>
 
@@ -59,34 +92,40 @@ export default {
         DialogRegistration
     },
     data: () => ({
-        loading: false,
+        loading: null,
         valid: false,
-        contact: '',
+        contact: '+639167983610',
         contactError: [
             v => !!v || 'Contact Number is required',
             v => /^(09|\+639)\d{9}$/.test(v) || 'Contact Number must be valid'
-        ],
-        sitekey: '6Ld3KXYUAAAAAJV5-8Vpx-9WE6YyhHw0LOw1pgEO',
-        captchaVerified: false
+        ]
     }),
     methods: {
         loginContact() {
-            this.loading = true
+            this.loading = 'contact'
+
             if(!this.$refs.login.validate()) {
                 return
             }
-            
         },
         verifyRecaptcha() {
             const self = this
-            this.loading = false
+            self.loading = null
+            self.contact = self.contact = /^(09)\d{9}$/.test(self.contact) ? "+63"+self.contact.substring(1, 11) : self.contact
             self.$store.commit('extras/setMobile', {mobile:self.contact})
             this.$auth.signInWithPhoneNumber(this.contact, window.recaptchaVerifier)
                 .then(function (confirmationResult) {
                     window.confirmationResult = confirmationResult
                     self.$store.commit('dialog/showdialog', {"key":"verifCode"})
                 }).catch(function (e) {
-                    console.log(e)
+                    switch(e.code) {
+                        case "auth/too-many-requests":
+                            self.$store.commit('snackbar/showSnack', {"text":"Too many requests! Try again later.", "icon":"warning", "color":"red"})
+                        break
+                        case "auth/invalid-phone-number":
+                            self.$store.commit('snackbar/showSnack', {"text":"Error!", "icon":"warning", "color":"red"})
+                        break
+                    }
                 });
         },
         loginFacebook() {
@@ -101,9 +140,11 @@ export default {
 
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha', {
             'size': 'invisible',
-            'callback': (response) => {
-                // reCAPTCHA solved, allow signInWithPhoneNumber.
+            'callback': (res) => {
                 self.verifyRecaptcha();
+            },
+            'expired-callback': (res) => {
+                self.$store.commit('snackbar/showSnack', {"text":"reCAPTCHA Expired!.", "icon":"warning", "color":"red"})
             }
         });
 

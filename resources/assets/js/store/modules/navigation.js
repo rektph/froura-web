@@ -3,8 +3,8 @@
 export const state = { 
     drawer: false,
     items: [
-        { title: 'Home', icon: 'dashboard' },
-        { title: 'About', icon: 'question_answer' }
+        { title: 'Dashboard', icon: 'dashboard', to: '/dashboard' },
+        { title: 'Logout', icon: 'exit_to_app', to: '/logout' }
     ]
 }
 

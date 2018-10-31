@@ -8,7 +8,7 @@
         :multi-line="mode === 'multi-line'"
         :vertical="mode === 'vertical'"
         v-model="snack_show" >
-        <v-icon :color="snack_icon_color">{{ snack_icon }}</v-icon> {{ snack_text }}
+        <v-icon :color="snack_icon_color">{{ snack_icon }}</v-icon>&nbsp;&nbsp;&nbsp;{{ snack_text }}
       <v-btn
         color="primary"
         flat

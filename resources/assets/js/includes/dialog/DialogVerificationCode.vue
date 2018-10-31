@@ -8,7 +8,7 @@
                 <v-toolbar dark card color="primary">
                     <v-toolbar-title>Enter Code</v-toolbar-title>
                 </v-toolbar>
-                <v-progress-linear :indeterminate="true" height="3" class="ma-0" color="secondary lighten-1" :active="false"></v-progress-linear>
+                <v-progress-linear :indeterminate="true" height="3" class="ma-0" color="secondary lighten-1" :active="loading"></v-progress-linear>
                 <v-card-text class="pb-0 mb-0">
                     <div class="full-width">
                         <v-form v-model="valid" lazy-validation>
@@ -43,28 +43,32 @@ export default {
         code: '',
         codeError: [],
         valid: false,
+        loading: false
     }),
     methods: {
-        updateDialog() {
-            this.$store.dispatch('dialog/showdialog', {"key":"verifCode"})
-        },
         verify() {
             const self = this
+            self.loading = true
             confirmationResult.confirm(self.code).then((res) => {
-                self.$db.get().then((doc) => {
+                self.$store.commit('snackbar/showSnack', {"text":"Verification Success", "icon":"info", "color":"green"})
+                self.$user.doc(res.user.uid).get().then((doc) => {
+                    self.loading = false
                     if(doc.exists) {
                         // redirect
                     } else {
                         // close dialog verifcode but save userid
-                        // open dialog registration
-                        self.$store.commit('auth/setUser', {utype:res.user.uid, utype:"1"})
+                        self.$store.commit('dialog/showdialog', {key:"verifCode"})
+                        self.$store.commit('auth/setUid', {uid:res.user.uid})
                         self.$user.doc(res.user.uid).set({
                             utype:"1"
                         })
+                        // open dialog registration
+                        self.$store.commit('dialog/showdialog', {key:"regForm"})
                     }
                 })
             }).catch((e) => {
-                console.log(e)
+                this.$store.commit('snackbar/showSnack', {"text":"Verification Code Error", "icon":"warning", "color":"red"})
+                self.codeError = "The Code is "
             })
         },
         key(e) {
@@ -72,8 +76,7 @@ export default {
         }
     },
     computed: mapGetters({
-        show: 'dialog/showVerifCode',
-        loading: 'extras/loading',
+        show: 'dialog/showVerifCode'
         
     })
 }

@@ -2,13 +2,15 @@
 // initial state
 export const state = { 
     show: {
-        "verifCode":false
+        "verifCode":false,
+        "regForm":false
     }
 }
 
 // getters
 export const getters = {
-    showVerifCode: state => state.show.verifCode
+    showVerifCode: state => state.show.verifCode,
+    showRegForm: state => state.show.regForm
 }
 
 // actions

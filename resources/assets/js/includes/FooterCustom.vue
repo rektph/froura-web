@@ -60,10 +60,6 @@
           to: '/contact'
         },
         {
-          name: 'Register',
-          to: '/register'
-        },
-        {
           name: 'Login',
           to: '/login'
         }

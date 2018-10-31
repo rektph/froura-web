@@ -1,6 +1,6 @@
 <template>
     <v-dialog
-        :value="true"
+        :value="show"
         persistent
         max-width="500">
         <v-card>
@@ -65,7 +65,8 @@ export default {
         validatePassenger() {
             this.loading = true
             const self = this
-            axios.post(self.baseUrl + "api/passenger/validate", {
+            
+            axios.post(self.baseUrl + "api/passenger/register", {
                 fname: self.fname,
                 lname: self.lname,
                 email: self.email,
@@ -76,6 +77,7 @@ export default {
                         this.loading = false
                         this.$refs.regForm.reset()
                         this.$store.commit('snackbar/showSnack', {"text":"Success", "icon":"info", "color":"green"})
+                        this.$store.commit('auth/setUtype', {"utype":res.data.role})
                         this.$router.push('/dashboard')
                     break
                     case 0:
@@ -103,6 +105,7 @@ export default {
     },
     computed: mapGetters({
         baseUrl: 'extras/baseUrl',
+        show: 'dialog/showRegForm',
         mobile: 'extras/mobile'
     })
 }
