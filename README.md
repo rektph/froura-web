@@ -32,4 +32,9 @@ npm install
 php artisan key:generate
 ```
 
+## Create a new firebaseConfig.js file on the /resources/assets/js folder then run this command
+```
+npm run watch
+```
+
 ## Then go to [froura.test](http://froura.test)
