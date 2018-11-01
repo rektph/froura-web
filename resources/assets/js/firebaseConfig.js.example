@@ -1,5 +1,6 @@
 import firebase from 'firebase'
 import 'firebase/firestore'
+require('firebase/auth')
 
 // firebase init goes here
 // https://console.firebase.google.com/u/0/project/frourav2/settings/general/
